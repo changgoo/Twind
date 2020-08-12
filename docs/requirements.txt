@@ -1,0 +1,7 @@
+sphinx>=1.8
+sphinx-autobuild
+sphinx_rtd_theme
+pandoc
+jupyter
+numpy
+xarray
