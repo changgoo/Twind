@@ -1,7 +1,7 @@
 Twind
 =====
 
-**Twind** is a Python prototyping of `TIGRESS Multiphase Wind Launching
+**Twind** is a Python prototype of `TIGRESS Multiphase Wind Launching
 Model <https://github.com/changgoo/twind>`_. The model is built on `the TIGRESS
 simulation suite <https://arxiv.org/abs/2006.16315>`_ developed as part
 of `the SMAUG
@@ -10,7 +10,7 @@ project <https://www.simonsfoundation.org/flatiron/center-for-computational-astr
 Basic Usage
 -----------
 
-If you wanted to obtain scaling relations between wind (mass, momentum, energy,
+If you want to obtain scaling relations between wind (mass, momentum, energy,
 and metal) loading factors and star formation rate surface density at different
 escape velocity cuts, you would construct PDFs with **Twind**:
 
@@ -27,7 +27,7 @@ A more complete example is available in the :ref:`quickstart` tutorial.
 
 ``pdf`` stores all information using `xarray <http://xarray.pydata.org/en/stable/>`_.
 Then, additional manipulations are easy.
-If you wanted to apply velocity cuts to get loading factors with a selected condition,
+If you want to apply velocity cuts to get loading factors with a selected condition,
 you would do something like:
 
 .. code-block:: python
@@ -36,7 +36,7 @@ you would do something like:
     cdf_over_vB100 = pdf['Mpdf'].where(pdf['vBz']>100).sum(dim=['logcs','logvout'])*dbinsq
     etaM_over_vB100 = pdf['etaM']*cdf_over_vB100
 
-You could get a quick and dirty plot for the mass loading factor:
+You can get a quick and dirty plot for the mass loading factor:
 
 .. code-block:: python
 
