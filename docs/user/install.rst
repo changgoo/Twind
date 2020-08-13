@@ -22,6 +22,7 @@ Simply, the following command would work.
 Then, you are ready to clone the repository.
 
 .. code-block:: bash
+
     git clone https://github.com/changgoo/Twind.git your-twind-path
 
 Add path to the source directory using ``sys.path``; e.g.,

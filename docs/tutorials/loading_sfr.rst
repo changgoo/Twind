@@ -90,23 +90,6 @@ as ``etaM``, ``etap``, ``etaE``, ``etaZ`` in the original ``Dataset``.
 
 .. code:: python
 
-    eta.plot()
-
-
-
-
-.. parsed-literal::
-
-    [<matplotlib.lines.Line2D at 0x7fdaa857f1d0>]
-
-
-
-
-.. image:: loading_sfr_files/loading_sfr_13_1.png
-
-
-.. code:: python
-
     dbinsq=pdf.attrs['dlogcs']*pdf.attrs['dlogvout']
     pdfs=['Mpdf','Mpdf-cool','Mpdf-hot',
           'ppdf','ppdf-cool','ppdf-hot',
@@ -134,7 +117,7 @@ as ``etaM``, ``etap``, ``etaE``, ``etaZ`` in the original ``Dataset``.
 
 
 
-.. image:: loading_sfr_files/loading_sfr_14_0.png
+.. image:: loading_sfr_files/loading_sfr_13_0.png
 
 
 .. note:: :math:`\Sigma_{\rm SFR}` is in :math:`M_\odot{\rm kpc^{-2} yr^{-1}}` everywhere in this document.
@@ -171,7 +154,7 @@ Let’s assume a particular form of the escape velocity:
 
 
 
-.. image:: loading_sfr_files/loading_sfr_18_0.png
+.. image:: loading_sfr_files/loading_sfr_17_0.png
 
 
 .. code:: python
@@ -207,7 +190,7 @@ Let’s assume a particular form of the escape velocity:
 
 
 
-.. image:: loading_sfr_files/loading_sfr_19_0.png
+.. image:: loading_sfr_files/loading_sfr_18_0.png
 
 
 Obviously, the result (red) falls between ``vBzcut0=30`` (blue) and
