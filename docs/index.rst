@@ -72,7 +72,9 @@ License & Attribution
 
 If you make use of **Twind** in your work, please cite our papers:
 
--   ``Kim et al. (2020a)`` [`arXiv <https://arxiv.org/abs/1202.3665>`_,
+-   ``Kim et al., 2020a,`` `First results from SMAUG: Characterization of
+    Multiphase Galactic Outflows from a Suite of Local Star-Forming Galactic Disk
+    Simulations` [`arXiv <https://arxiv.org/abs/1202.3665>`_,
     `ADS <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K>`_,
     `BibTeX <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/exportcitation>`_]
--   ``Kim et al. (2020b)`` [links].
+-   ``Kim et al. (2020b)`` `TIGRESS Multiphase Wind Launching Model: a Field Manual` [links].
