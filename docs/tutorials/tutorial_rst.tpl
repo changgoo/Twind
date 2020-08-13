@@ -1,8 +1,8 @@
 {%- extends 'display_priority.tpl' -%}
 
 {% block header %}
-**Note:** This tutorial was generated from an IPython notebook that can be
-downloaded `here <../../_static/notebooks/{{ resources.metadata.name }}.ipynb>`_.
+**Note:** This tutorial was generated from an IPython notebook that can be downloaded
+`here <https://github.com/changgoo/Twind/tree/master/docs/_static/notebooks/{{ resources.metadata.name }}.ipynb>`_.
 
 .. _{{resources.metadata.name}}:
 {% endblock %}

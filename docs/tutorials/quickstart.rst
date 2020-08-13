@@ -1,5 +1,5 @@
-**Note:** This tutorial was generated from an IPython notebook that can be
-downloaded `here <../../_static/notebooks/quickstart.ipynb>`_.
+**Note:** This tutorial was generated from an IPython notebook that can be downloaded
+`here <https://github.com/changgoo/Twind/tree/master/docs/_static/notebooks/quickstart.ipynb>`_.
 
 .. _quickstart:
 
@@ -13,7 +13,7 @@ Step 1: initialize Twind class
 
 We are initilizing ``Twind`` class with default parameters set to match
 the TIGRESS simulation suite results at :math:`|z|=H`. Possible options
-are ``z0='H', '2H', '500', '1000'``.
+are ``z0=['H', '2H', '500', '1000']``.
 
 .. code:: python
 
@@ -67,47 +67,21 @@ are ``z0='H', '2H', '500', '1000'``.
      0.636 0.854 1.04  0.665]
 
 
-With the ``verbose=True`` option, it prints details of parameters
-including
+With the ``verbose=True`` option, key attributes are printed.
 
-``cool_params``: parameters for cool mass loading PDF
-
-.. math::
-
-    \tilde{f}_{M}^{\rm cool}(u,w) = A \left(\frac{v_{\rm out}}{v_{\rm out,0}}\right)^2
-       \exp\left[-\left(\frac{v_{\rm out}}{v_{\rm out,0}}\right)\right]
-       \exp\left[-\frac{1}{2}\left(\frac{\ln(c_{\rm s}/c_{\rm s,0})}{\sigma}\right)^2\right]
-
-where ``A = A_v*A_cs = 21.2`` and
-
-.. math:: \frac{v_{\rm out,0}}{{\rm km/s}} = 25\Sigma_{\rm SFR}^{0.23}+3
-
-``hot_params``: parameters for hot mass loading PDF
-
-.. math::
-
-    \tilde{f}_{M}^{\rm hot}(u,w) = B \left(\frac{v_{\mathcal{B},z}}{v_{\mathcal{B},0}}\right)^2
-       \exp\left[-\left(\frac{v_{\mathcal{B},z}}{v_{\mathcal{B},0}}\right)^4\right]
-       \left(\frac{\mathcal{M}}{\mathcal{M}_0}\right)^3
-       \exp\left[-\left(\frac{\mathcal{M}}{\mathcal{M}_0}\right)\right] 
-
-where ``A=A_vB*A_M=5.98``,
-:math:`v_{\mathcal{B},z}\equiv(v_{\rm out}^2+c_s^2)^{1/2}`,
-:math:`\mathcal{M}=v_{\rm out}/c_s`, and
-
-.. math::
-
-   \frac{v_{\mathcal{B},0}}{10^3{\rm km/s}} = 2.4
-       \left(\frac{\Sigma_{\rm SFR}^{1/2}}{2+\Sigma_{\rm SFR}^{1/2}}\right)+0.8
-
+-  ``cool_params``: parameters for cool mass loading PDF. See
+   :ref:`model`
+-  ``hot_params``: parameters for hot mass loading PDF. See
+   :ref:`model`
 -  ``params``: other physical parameters related to the particular
-   choices of the TIGRESS simulation suite
+   choices of the TIGRESS simulation suite (see `Kim et
+   al. (2020a) <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/abstract>`__)
 -  ``ref_params``: outflow rates are normalized by
    :math:`\Sigma_{\rm SFR}q_{\rm ref}/m_*` to obtain loading factors
 -  ``scaling_params``: fitting results for velocity-integrated loading
    factors as a function of SFR surface density (in log-log space)
    presented in `Kim et
-   al. 2020 <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/abstract>`__.
+   al. (2020a) <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/abstract>`__.
    Each array contains the results for four loading factors (mass,
    momentum, energy, metal) of four phases (cool, intermediate, hot,
    whole). E.g., first four values are the results for the mass loading
@@ -118,30 +92,33 @@ where ``A=A_vB*A_M=5.98``,
    -  ``A`` is :math:`10^a`
    -  ``p`` is :math:`b+1` for flux scalings.
 
-      .. math::  \eta_q = A\Sigma_{\rm SFR}^b 
+.. math::  \eta_q = A\Sigma_{\rm SFR}^b 
 
-:math:`\Sigma_{\rm SFR}` is in :math:`M_\odot{\rm kpc^{-2} yr^{-1}}`
-everywhere in this document, and :math:`u \equiv \log v_{\rm out}` and
-:math:`w\equiv \log c_s` as defined in `the paper <link>`__.
+.. note:: :math:`\Sigma_{\rm SFR}` is in :math:`M_\odot{\rm kpc^{-2} yr^{-1}}` everywhere in this document.
+
+.. note:: :math:`u \equiv \log v_{\rm out}` and :math:`w \equiv \log c_s` as defined in `Kim et al. (2020b) <link>`_.
 
 Step 2: setup axes
 ------------------
 
 We use `xarray <http://xarray.pydata.org/en/stable/>`__ extensibly for
-easier manipulation with proper broadcasting, indexing, slicing, and
+easier manipulation with broadcasting, indexing, slicing, and
 interpolation.
 
 ``set_axes()`` function accept either the simulated PDF (in the form of
-``xarray.Dataset``) or a dictionary defining a range (in log) and number
-of bins for ``vout`` and ``cs`` axes (``sfr`` can either be a scalar or
-an array). Default is - ``vout`` = (0,4,500) - ``cs`` = (0,4,500) -
-``sfr`` = (-6,2,100)
+``xarray.Dataset``) or list of ranges (in log) and number of bins for
+``vout`` and ``cs`` axes (``sfr`` can either be a scalar or an array).
+Default is
 
-This function will set members ``u=logvout`` and ``w=logcs`` as 1D
+-  ``vout`` = (0,4,500)
+-  ``cs`` = (0,4,500)
+-  ``sfr`` = (-6,2,100)
+
+This function will set attributes ``u=logvout`` and ``w=logcs`` as 1D
 ``DataArray`` as well as ``vBz`` and ``Mach`` as 2D ``DataArray`` for
 future use. If a range of ``sfr`` is passed, it will also set a member
-``logsfr`` as 1D ``DataArray`` with different coordinates so that final
-PDF would be 3D ``DataArray``.
+``logsfr`` as 1D ``DataArray`` with different coordinates so that the
+final PDFs would be 3D ``DataArray``.
 
 For this example, we use a single value of SFR surface density and
 reduced number of bins for velocity axes.
@@ -221,7 +198,7 @@ scalar, these are also scalars.
 
 .. parsed-literal::
 
-    <xarray.plot.facetgrid.FacetGrid at 0x7fb5482f6470>
+    <xarray.plot.facetgrid.FacetGrid at 0x7fc518825390>
 
 
 
@@ -235,10 +212,10 @@ Step 4: build all PDFs
 We have a function ``build_model`` that automatically build model PDFs
 for mass, momentum, energy, and metal loading factors and return a
 ``xarray.Dataset`` containing all. The last three PDFs are reconstructed
-from the mass PDF as outlined in `the Paper <link>`__. By default, they
-are renormalized to ensure the integration over the entire ``(u,w)``
-gives 1. Note that the metal PDF is not normalized for the input
-``ZISM`` but for ``ZISM0``.
+from the mass PDF as outlined in `Kim et al. (2020b) <link>`__. By
+default, they are renormalized to ensure the integration over the entire
+``(u,w)`` gives 1. Note that the metal PDF is not normalized for the
+input ``ZISM`` but for ``ZISM0``.
 
 Again, depending on the choice of the ``sfr`` axis, the resulting PDFs
 can either be 2D or 3D. The returned ``Dataset`` have variables for PDFs
@@ -269,7 +246,7 @@ apply loading factor ratios to combine the mass loading PDF as
 
 .. math:: \tilde{f}_M = \frac{\eta_M^{\rm cool}}{\eta_M}\tilde{f}_M^{\rm cool}+\frac{\eta_M^{\rm hot}}{\eta_M}\tilde{f}_M^{\rm hot}
 
-Note that ``Mpdf-cool`` and ``Mpdf-hot`` (and correconding other PDFs)
+Note that ``Mpdf-cool`` and ``Mpdf-hot`` (and corresponding other PDFs)
 in the returned ``Dataset`` are not :math:`\tilde{f}_M^{\rm ph}` but
 :math:`\frac{\eta_M^{\rm ph}}{\eta_M}\tilde{f}_M^{\rm ph}`.
 
@@ -305,7 +282,7 @@ Finally, 2D PDFs for mass, momentum, energy, and metal loadings at
 
 .. parsed-literal::
 
-    <xarray.plot.facetgrid.FacetGrid at 0x7fb51822b6a0>
+    <xarray.plot.facetgrid.FacetGrid at 0x7fc538ac0a20>
 
 
 

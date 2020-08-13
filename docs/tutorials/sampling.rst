@@ -1,5 +1,5 @@
-**Note:** This tutorial was generated from an IPython notebook that can be
-downloaded `here <../../_static/notebooks/sampling.ipynb>`_.
+**Note:** This tutorial was generated from an IPython notebook that can be downloaded
+`here <https://github.com/changgoo/Twind/tree/master/docs/_static/notebooks/sampling.ipynb>`_.
 
 .. _sampling:
 
@@ -15,9 +15,7 @@ and parameters of the model.
 .. code:: python
 
     import twind
-
-.. code:: python
-
+    
     sampler=twind.TigressWindSampler()
 
 Sampling at a single epoch
@@ -31,7 +29,7 @@ For this example, we use
 
 and
 
--  :math:`m^{\rm cool} = m^{\rm hot} \in (10^1, 10^2, 10^3)M_\odot`
+-  :math:`m^{\rm cool} = m^{\rm hot} \in (10^2, 10^3)M_\odot`
 
 .. code:: python
 
@@ -70,7 +68,7 @@ and
 
 
 
-.. image:: sampling_files/sampling_9_0.png
+.. image:: sampling_files/sampling_8_0.png
 
 
 The mass in the outflow can be obatined by
@@ -85,24 +83,24 @@ loading factors are
     etaM=sampler._eta_sfr_scaling(sfr0,'M_total')
     etaMc=sampler._eta_sfr_scaling(sfr0,'M_cool')
     etaMh=sampler._eta_sfr_scaling(sfr0,'M_hot')
-    print(etaM, etaMc, etaMh)
+    print('eta_M={:.2f} eta_M^cool={:.2f} eta_M^hot={:.2f}'.format(etaM, etaMc, etaMh))
 
 
 .. parsed-literal::
 
-    7.073147336500111 6.543468427172779 0.19266640580154454
+    eta_M=7.07 eta_M^cool=6.54 eta_M^hot=0.19
 
 
 which give the outflowing mass in each phase
 
 .. code:: python
 
-    print(etaM*sfr0*area*dt,etaMc*sfr0*area*dt,etaMh*sfr0*area*dt)
+    print('M_out={:.3g} M_out^cool={:.3g} M_out^hot={:.3g}'.format(etaM*sfr0*area*dt,etaMc*sfr0*area*dt,etaMh*sfr0*area*dt))
 
 
 .. parsed-literal::
 
-    70731.47336500112 65434.68427172778 1926.6640580154453
+    M_out=7.07e+04 M_out^cool=6.54e+04 M_out^hot=1.93e+03
 
 
 Therefore, even for :math:`m^{\rm hot}=10^3 M_\odot`, we expect to
@@ -112,9 +110,11 @@ Sampling from a time series
 ---------------------------
 
 For this example, we use a sinusoidal function for SFR surface density
-time series for 200 Myr with - mean
-:math:`\Sigma_{\rm SFR} = 10^{-3} M_\odot{\rm kpc^{-2} yr^{-1}}`, -
-period of 50 Myr
+time series for 200 Myr with
+
+-  mean
+   :math:`\Sigma_{\rm SFR} = 10^{-3} M_\odot{\rm kpc^{-2} yr^{-1}}`,
+-  period of 50 Myr
 
 .. code:: python
 
@@ -129,9 +129,10 @@ period of 50 Myr
 
 For a given time series of :math:`\Sigma_{\rm SFR}`, we get reference
 values of outflow rates using the scaling relations of outflow loading
-factors (of each outflow phase) presented in `Paper I <link>`__.
+factors (of each outflow phase) presented in `Kim et
+al. (2020a) <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/abstract>`__.
 
-``get_refs`` method returns four lists containing time series of
+``sampler.get_refs`` method returns four lists containing time series of
 reference outflow rates and loading factors for total, cool, and hot
 outflows. Each list contains ``mass``, ``momemtum``, ``energy``, and
 ``metal`` in order.
@@ -184,8 +185,10 @@ about 50, therefore, for fair sampling, we might need
         axes[3].set_ylabel('Metal Mass')
         return fig
 
-Frist, as a well sampled example, we use -
-:math:`m^{\rm cool} = 10^3 M_\odot` - :math:`m^{\rm hot} = 10^1 M_\odot`
+Frist, as a well sampled example, we use
+
+-  :math:`m^{\rm cool} = 10^3 M_\odot`
+-  :math:`m^{\rm hot} = 10^1 M_\odot`
 
 .. code:: python
 
@@ -193,12 +196,14 @@ Frist, as a well sampled example, we use -
 
 
 
-.. image:: sampling_files/sampling_24_0.png
+.. image:: sampling_files/sampling_23_0.png
 
 
 The second example is for well sampled cool phase but poorly sampled hot
-phase. - :math:`m^{\rm cool} = 10^3 M_\odot` -
-:math:`m^{\rm hot} = 10^3 M_\odot`
+phase.
+
+-  :math:`m^{\rm cool} = 10^3 M_\odot`
+-  :math:`m^{\rm hot} = 10^3 M_\odot`
 
 .. code:: python
 
@@ -206,5 +211,5 @@ phase. - :math:`m^{\rm cool} = 10^3 M_\odot` -
 
 
 
-.. image:: sampling_files/sampling_26_0.png
+.. image:: sampling_files/sampling_25_0.png
 

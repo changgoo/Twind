@@ -1,5 +1,5 @@
-**Note:** This tutorial was generated from an IPython notebook that can be
-downloaded `here <../../_static/notebooks/loading_sfr.ipynb>`_.
+**Note:** This tutorial was generated from an IPython notebook that can be downloaded
+`here <https://github.com/changgoo/Twind/tree/master/docs/_static/notebooks/loading_sfr.ipynb>`_.
 
 .. _loading_sfr:
 
@@ -33,10 +33,7 @@ gives a 3D PDF model.
 
     pdf=tw.build_model(renormalize=True,energy_bias=True,verbose=False)
 
-After building the 3D PDF model, all subsequent manipulations heavily
-rely on the functionalities of
-`xarray <http://xarray.pydata.org/en/stable/>`__. We only show a few
-examples here.
+.. note:: After building the 3D PDF model, all subsequent manipulations heavily rely on the functionalities of `xarray <http://xarray.pydata.org/en/stable/>`_. We only show a few examples here.
 
 Slicing back to 2D PDF
 ----------------------
@@ -123,8 +120,7 @@ as ``etaM``, ``etap``, ``etaE``, ``etaZ`` in the original ``Dataset``.
 .. image:: loading_sfr_files/loading_sfr_13_0.png
 
 
-**NOTE:** :math:`\Sigma_{\rm SFR}` is in
-:math:`M_\odot{\rm kpc^{-2} yr^{-1}}` everywhere in this document.
+.. note:: :math:`\Sigma_{\rm SFR}` is in :math:`M_\odot{\rm kpc^{-2} yr^{-1}}` everywhere in this document.
 
 The mass (and metal) loading factor :math:`\eta_M` changes dramatically
 as different velocity cuts are applied. This is because the cool outflow
