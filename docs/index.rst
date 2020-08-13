@@ -31,6 +31,7 @@ If you wanted to apply velocity cuts to get loading factors with a selected cond
 you would do something like:
 
 .. code-block:: python
+
     dbinsq = pdf.attrs['dlogcs']*pdf.attrs['dlogvout']
     cdf_over_vB100 = pdf['Mpdf'].where(pdf['vBz']>100).sum(dim=['logcs','logvout'])*dbinsq
     etaM_over_vB100 = pdf['etaM']*cdf_over_vB100
@@ -38,6 +39,7 @@ you would do something like:
 You could get a quick and dirty plot for the mass loading factor:
 
 .. code-block:: python
+
     etaM_over_vB100.plot()
 
 A more complete example is available in the :ref:`loading_sfr` tutorial.
@@ -70,7 +72,7 @@ License & Attribution
 
 If you make use of **Twind** in your work, please cite our papers:
 
--  ``Kim et al. (2020a)`` [`arXiv <https://arxiv.org/abs/1202.3665>`_,
-`ADS <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K>`_,
-`BibTeX <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/exportcitation>`_]
--  ``Kim et al. (2020b)`` [links].
+-   ``Kim et al. (2020a)`` [`arXiv <https://arxiv.org/abs/1202.3665>`_,
+    `ADS <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K>`_,
+    `BibTeX <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/exportcitation>`_]
+-   ``Kim et al. (2020b)`` [links].

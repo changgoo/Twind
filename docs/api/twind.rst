@@ -1,13 +1,7 @@
 .. _api:
 
-TigressWindModel
-================
+API Reference
+=============
 
-.. autoclass:: twind.TigressWindModel
-    :members:
-
-TigressWindSampler
-==================
-
-.. autoclass:: twind.TigressWindSampler
+.. automodule:: twind
     :members:

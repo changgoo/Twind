@@ -5,8 +5,8 @@
 
 
 
-Sampling
-========
+Particle Sampling
+=================
 
 ``TigressWindSampler`` class is a child of ``TigressWindModel`` class.
 For sampling, it won’t build pdf models, but use the scaling relations
