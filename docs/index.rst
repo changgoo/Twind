@@ -1,7 +1,7 @@
 Twind
 =====
 
-**Twind** is a Python prototyping of `TIGRESS Muntiphase Wind Launching
+**Twind** is a Python prototyping of `TIGRESS Multiphase Wind Launching
 Model <https://github.com/changgoo/twind>`_. The model is built on `the TIGRESS
 simulation suite <https://arxiv.org/abs/2006.16315>`_ developed as part
 of `the SMAUG
@@ -50,8 +50,7 @@ A more complete example is available in the :ref:`quickstart` tutorial.
 
 License & Attribution
 ---------------------
-Twind is free software made available under the MIT License. For details
-see the ``LICENSE``.
+**Twind** is free software made available under the MIT License.
 
 If you make use of **Twind** in your work, please cite our papers
 Kim et al. (2020a) [`arXiv <https://arxiv.org/abs/1202.3665>`_,
