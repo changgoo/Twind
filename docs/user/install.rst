@@ -6,16 +6,18 @@ Installation
 Since **Twind** is a pure Python module, it should be pretty easy to install.
 In addition to widely used packages like `scipy <https://www.scipy.org>`_, `numpy <https://numpy.org/>`_,
 `matplotlib <https://matplotlib.org>`_,
-you'll only need `xarray <http://xarray.pydata.org/en/stable/>`_.
+you'll only need `xarray <http://xarray.pydata.org/en/stable/>`_
+and `astropy <https://www.astropy.org>_`.
 
 Github sources
 --------------
 `pip <http://www.pip-installer.org/>`_ or `conda <https://conda.io>`_ can be used to install `xarray`
-(see `their installation instruction <http://xarray.pydata.org/en/stable/installing.html>`_).
-Then, simpy clone the repository and use it!
+(see `their installation instruction <http://xarray.pydata.org/en/stable/installing.html>`_) and `astropy`.
+Simply, the following commands would work.
 
 .. code-block:: bash
 
+    conda install -c conda-forge xarray astropy
     git clone https://github.com/changgoo/Twind.git your-twind-path
 
 Add path to the source directory using `sys.path`; e.g.,
