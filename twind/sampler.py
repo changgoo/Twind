@@ -182,8 +182,8 @@ class TigressWindSampler(TigressWindModel):
         Returns
         -------
         cool, hot : dicts
-            information including particle mass, 3 component velocity, sound speed, metallicity,
-            and index of each particle in corresponding to the input SFR surface density array,
+            dicts containg particle mass, 3 component velocity, sound speed, metallicity,
+            and index of each particle in the corresponding input SFR surface density array,
             which will be used for reconstuction of time series
         """
 
@@ -230,8 +230,8 @@ class TigressWindSampler(TigressWindModel):
         Returns
         -------
         cool, hot : dicts
-            information including particle mass, 3 component velocity, sound speed, metallicity,
-            and index of each particle in corresponding to the input SFR surface density array,
+            dicts containg particle mass, 3 component velocity, sound speed, metallicity,
+            and index of each particle in the corresponding input SFR surface density array,
             which will be used for reconstuction of time series
         """
 

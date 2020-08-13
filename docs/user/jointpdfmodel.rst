@@ -3,11 +3,14 @@
 Joint PDF Model
 ===============
 
+.. note::
+    See `Kim et al. (2020b) <link>`_ for details.
+
 Cool outflow model
 ------------------
 
 The cool outflow (:math:`T<2\times10^4{\rm K}`) in the TIGRESS suite is well
-described by a model combining a `log-normal <https://en.wikipedia.org/wiki/Log-normal_distribution>`_ and `generalized gamma function <https://en.wikipedia.org/wiki/Generalized_gamma_distribution>`_:
+described by a model combining `log-normal <https://en.wikipedia.org/wiki/Log-normal_distribution>`_ and `generalized gamma distribution <https://en.wikipedia.org/wiki/Generalized_gamma_distribution>`_:
 
 .. math:: \tilde{f}_{M}^{\rm cool}(u,w) = A \left(\frac{v_{\rm out}}{v_{\rm out,0}}\right)^2
     \exp\left[-\left(\frac{v_{\rm out}}{v_{\rm out,0}}\right)\right]
@@ -16,7 +19,7 @@ described by a model combining a `log-normal <https://en.wikipedia.org/wiki/Log-
 where :math:`A=(\ln 10)^2/(2\pi\sigma^2)^{1/2}=2.12/\sigma`.
 
 .. math:: \frac{v_{\rm out,0}}{{\rm km/s}} = 25
-    \left(\frac{\Sigma_{\rm SFR}}{M_{\odot}{\rm kpc^{-2}yr^{-1}}}\right)^{0.23}+5
+    \left(\frac{\Sigma_{\rm SFR}}{M_{\odot}{\rm kpc^{-2}yr^{-1}}}\right)^{0.23}+3
 
 Hot outflow model
 -----------------
