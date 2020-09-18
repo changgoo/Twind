@@ -3,13 +3,78 @@ import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
 import cmasher as cma
+import pandas as pd
 
 from matplotlib.ticker import LogLocator,AutoLocator,AutoMinorLocator,MaxNLocator
+
+from .sampler import to_time_series, TigressWindSampler
 
 discrete_cmap = ListedColormap(sns.color_palette('tab20c',n_colors=20,desat=0.5).as_hex())
 pdf_cmap = cma.fall_r
 pdfmin = -2.5
 pdfmax = 1
+
+def pdf_projection(pdf,wpdf=None,dvB=0.02,dMach=0.02):
+    """Obtain 1D PDFs prjected onto u, w, log vB, log Mach
+
+    Parameters
+    ----------
+    pdf : xarray.Dataset
+        2D pdf of u and w (from TigressWindModel)
+    wpdf : xarray.Dataset, optional
+        weight field
+    dvB : float
+        log vB bin (the default is 0.02)
+    dMach : float
+        log Mach bin (the default is 0.02)
+
+    Returns
+    -------
+    bins, pdf : list of tuples (bin, pdf) for all four variables
+        [(u, pdf_u), (w, pdf_w), (logvB, pdf_logvB) (log Mach, pdf_logMach)]
+    """
+    dlogcs = np.diff(pdf.logcs)[0]
+    dlogvout = np.diff(pdf.logvout)[0]
+    dbinsq = dlogcs*dlogvout
+
+    if wpdf is None:
+        pdf_u = pdf.sum(dim=['logcs'])*dlogcs
+        pdf_w = pdf.sum(dim=['logvout'])*dlogvout
+    else:
+        pdf_u = (pdf*wpdf).sum(dim=['logcs'])/wpdf.sum(dim=['logcs'])
+        pdf_w = (pdf*wpdf).sum(dim=['logvout'])/wpdf.sum(dim=['logvout'])
+
+    vBz_bins = np.arange(0,4,dvB)
+    Mach_bins = np.arange(-2,2,dMach)
+
+    cs = 10.**pdf.logcs
+    vout = 10.**pdf.logvout
+    vBz = np.sqrt(5.0*cs**2+vout**2)
+    Mach = 1/cs*vout
+
+    vBz.name = 'vBz'
+    Mach.name = 'Mach'
+
+    if wpdf is None:
+        pdf_vBz = pdf.groupby_bins(np.log10(vBz),vBz_bins)
+        pdf_vBz = pdf_vBz.sum(dim=['stacked_logcs_logvout'])*dbinsq/dvB
+        pdf_Mach = pdf.groupby_bins(np.log10(Mach),Mach_bins)
+        pdf_Mach = pdf_Mach.sum(dim=['stacked_logcs_logvout'])*dbinsq/dMach
+    else:
+        wpdf_vBz = wpdf.groupby_bins(np.log10(vBz),vBz_bins)
+        wpdf_vBz = wpdf_vBz.sum(dim=['stacked_logcs_logvout'])
+        wpdf_Mach = wpdf.groupby_bins(np.log10(Mach),Mach_bins)
+        wpdf_Mach = wpdf_Mach.sum(dim=['stacked_logcs_logvout'])
+        pdf_vBz = (pdf*wpdf).groupby_bins(np.log10(vBz),vBz_bins)
+        pdf_vBz = pdf_vBz.sum(dim=['stacked_logcs_logvout'])/wpdf_vBz
+        pdf_Mach = (pdf*wpdf).groupby_bins(np.log10(Mach),Mach_bins)
+        pdf_Mach = pdf_Mach.sum(dim=['stacked_logcs_logvout'])/wpdf_Mach
+
+    pdf_list=[(pdf.logvout,pdf_u),(pdf.logcs,pdf_w),
+              (vBz_bins[:-1]+0.5*dvB,pdf_vBz.T),
+              (Mach_bins[:-1]+0.5*dMach,pdf_Mach.T)]
+
+    return pdf_list
 
 def scifmt(value,fmt=':9.1e'):
     """Formatting float in scientific format"""
@@ -19,7 +84,10 @@ def scifmt(value,fmt=':9.1e'):
     if abs(digits) < maxdigits:
         return'{{{}}}'.format(':9.{}f'.format(maxdigits-digits-1)).format(value)
     else:
-        return sp[0]+'\\cdot 10^{{{}}}'.format(int(sp[1]))
+        if eval(sp[0]) == 1.0:
+            return '10^{{{}}}'.format(int(sp[1]))
+        else:
+            return sp[0]+'\\cdot 10^{{{}}}'.format(int(sp[1]))
 
 def add_vBM_grid(ax,pdf,vB_labels=True,M_labels=True):
     """Add contours of log vB and log Mach
@@ -205,12 +273,12 @@ def plot_vB_projection(sim,reconstructed=True,**kwargs):
 
     pdf = sim.simpdf
     for k,label,c in zip(fields,labels,colors):
-        pdf1d = sim.pdf_projection(pdf[k])
+        pdf1d = pdf_projection(pdf[k])
         x, y = pdf1d[2]
         l, = plt.step(x,y,label=label,lw=3,color=c,alpha=0.5)
         if reconstructed:
             if k+'_r' in pdf:
-                pdf1d = sim.pdf_projection(pdf[k+'_r'])
+                pdf1d = pdf_projection(pdf[k+'_r'])
                 x, y = pdf1d[2]
                 plt.step(x,y,lw=1,color=l.get_color())
 
@@ -238,7 +306,7 @@ def plot_vB_projection_ratio(sim,**kwargs):
 
     for k,label,c in zip(fields,labels,colors):
         ratio = sim.simpdf[k+'_r']/sim.simpdf[k]
-        pdf1d = sim.pdf_projection(ratio,wpdf=sim.simpdf['Mpdf'])
+        pdf1d = pdf_projection(ratio,wpdf=sim.simpdf['Mpdf'])
         x, y = pdf1d[2]
         l,=plt.plot(x,y,label=label,color=c,**kwargs)
 
@@ -296,7 +364,7 @@ def plot_proj(pdf1d,axes,**kwargs):
     ----------
     pdf1d : list
         bin and 1d pdf prjected on different axes
-        created by TigressPDFModel.pdf_projection()
+        created by pdf_projection
     axes : list
         axes to plot
 
@@ -359,8 +427,8 @@ def comparison_pdfs(sim,q='M'):
     plt.colorbar(im,cax=_axes[1])
 
     # draw 1D projections
-    pdf1d = sim.pdf_projection(sim.simpdf[q+'pdf'])
-    plot_proj(pdf1d,_axes[2:],xlabel=True,color='k',lw=1,label='sim.')
+    pdf1d = pdf_projection(sim.simpdf[q+'pdf'])
+    plot_proj(pdf1d,_axes[2:],color='k',lw=1,label='sim.')
 
     # draw model PDF contour
     plt.sca(_axes[0])
@@ -369,12 +437,12 @@ def comparison_pdfs(sim,q='M'):
     cbar.set_ticks([-2,-1,0,1])
 
     # draw 1D projections
-    pdf1d = sim.pdf_projection(modelpdf[q+'pdf-cool'])
-    plot_proj(pdf1d,_axes[2:],xlabel=False,lw=2,label='cool',zorder=1)
-    pdf1d = sim.pdf_projection(modelpdf[q+'pdf-hot'])
-    plot_proj(pdf1d,_axes[2:],xlabel=False,lw=2,label='hot',zorder=1)
-    pdf1d = sim.pdf_projection(modelpdf[q+'pdf'])
-    plot_proj(pdf1d,_axes[2:],xlabel=False,lw=3,label='total',zorder=0)
+    pdf1d = pdf_projection(modelpdf[q+'pdf-cool'])
+    plot_proj(pdf1d,_axes[2:],lw=2,label='cool',zorder=1)
+    pdf1d = pdf_projection(modelpdf[q+'pdf-hot'])
+    plot_proj(pdf1d,_axes[2:],lw=2,label='hot',zorder=1)
+    pdf1d = pdf_projection(modelpdf[q+'pdf'])
+    plot_proj(pdf1d,_axes[2:],lw=3,label='total',zorder=0)
 
     toggle_yticks(_axes[3:])
 
@@ -450,5 +518,116 @@ def show_loading(model,vlist=[0,30,1000,300,100],sims=None):
     ax.annotate('$300$',(1.5e-4,0.25),ha='left',va='top',color='C3',fontsize='small')
     ax.annotate(r'$10^3$',(2.e-4,0.015),ha='left',va='bottom',color='C2',fontsize='small')
     plt.setp(axes,'xlabel',r'$\Sigma_{\rm SFR}\,[{\rm M_\odot\,kpc^{-2}\,yr^{-1}}]$')
+
+    return fig
+
+def sampling_from_simulation_sfr(sim,tdelay=10):
+    """Three-panel figure for
+    (a) mass outflow rate of cool gas
+    (b) energy outflow rate of hot gas
+    (c) distribution of sampled particles
+
+    Parameters
+    ----------
+    sim : TigressSimLoader
+    tdelay : float
+        time delay to be applied to sampled data in Myr
+    """
+
+    sampler=TigressWindSampler(z0=sim.z0)
+
+    ts = sim.time_series
+    sfr = ts['sfr10']
+    time = ts['tMyr']
+    dt = 1.e6
+    area = 1.024
+    mc = (1.e4,1.e5,1.e6)
+    mh = (1.e2,1.e3,1.e4)
+
+    # determine indices that match the desired time range
+    torb = ts.torb
+    idx = np.arange(len(torb))
+    idx = idx[(torb>1) & (torb<2)]
+    imin, imax = idx.min(), idx.max()
+
+    fig=plt.figure(figsize=(18,8),constrained_layout=False)
+    og=fig.add_gridspec(2,2,width_ratios=[1.5,1],wspace=0.2,hspace=0.1)
+
+    axes=[]
+
+    axes.append(fig.add_subplot(og[0,0]))
+    axes.append(fig.add_subplot(og[1,0]))
+    axes.append(fig.add_subplot(og[:,1]))
+
+    refs,etas,etac,etah = sampler.get_refs(sfr)
+
+    axes[0].fill_between(time,0,refs[0]*area,color='k',alpha=0.2,lw=0)
+    axes[1].fill_between(time,0,refs[2]*area,color='k',alpha=0.2,lw=0)
+
+    for m1, m2, alpha in zip(mc,mh,[0.5,0.7,0.9]):
+        cool,hot = sampler.draw_mass(sfr,m1,m2,area=area,dt=dt)
+
+        ts_cool = to_time_series(cool,time)
+        ts_hot = to_time_series(hot,time)
+
+        # plot mass outflow rate of cool gas
+        plt.sca(axes[0])
+
+        sr = pd.Series(ts_cool[0]/dt,time)
+        plt.plot(time+tdelay,sr.rolling(10).mean(),
+                 lw=2,label=r'${}M_\odot$'.format(scifmt(m1)))
+        plt.yscale('log')
+        plt.ylim(1.e-3,1)
+        plt.legend(loc=1,ncol=3,title=r'$m^{{\rm cool}}$',
+                   fontsize='x-small',framealpha=1.0)
+        plt.ylabel(r'$\dot{M}_{\rm out}\,[M_\odot\,{\rm yr^{-1}}]$')
+        plt.annotate('(a)',(0.02,0.95),xycoords='axes fraction',ha='left',va='top')
+        toggle_xticks([axes[0]])
+
+        # plot energy outflow rate of hot gas
+        plt.sca(axes[1])
+        sr = pd.Series(ts_hot[2]/dt,time)
+        plt.plot(time+tdelay,sr.rolling(10).mean(),
+                 lw=2,label=r'${}M_\odot$'.format(scifmt(m2))+
+                            r'$('+scifmt(ts_hot[2].mean(),fmt=':9.1e')+
+                            r'{{\rm erg}})$')
+        plt.ylabel(r'$\dot{E}_{\rm out}\,[{\rm erg\,yr^{-1}}]$')
+        plt.xlabel(r'${\rm time [Myr]}$')
+        plt.legend(loc=1,fontsize='x-small',framealpha=1.0,ncol=3,
+                   title=r'$m^{\rm hot}( \overline{e^{{\rm hot}}})$')
+        plt.annotate('(b)',(0.02,0.95),xycoords='axes fraction',ha='left',va='top')
+
+
+        plt.setp(axes[:2],'xlim',(0,600))
+
+        plt.yscale('log')
+
+        # plot sampled particle distribution on top of simulation distribution
+        # only particles in 1<t/torb<2
+
+        plt.sca(axes[2])
+
+        show2d(sim.simpdf['Mpdf'],alpha=0.5)
+
+        cool_idx = (cool['idx']>imin) & (cool['idx']<imax)
+        hot_idx = (hot['idx']>imin) & (hot['idx']<imax)
+
+        uc = np.log10(cool['vz'][cool_idx])
+        wc = np.log10(cool['cs'][cool_idx])
+        uh = np.log10(hot['vz'][hot_idx])
+        wh = np.log10(hot['cs'][hot_idx])
+
+        l,=plt.plot(uc,wc,'o',alpha=alpha,markeredgewidth=0,
+                    label=r'$N^{{\rm cool}}={}$'.format(len(uc)))
+        plt.plot(uh,wh,'s',alpha=alpha,color=l.get_color(),
+                 markeredgewidth=0,label=r'$N^{{\rm hot}}={}$'.format(len(uh)))
+
+        plt.annotate('(c)',(0.05,0.95),xycoords='axes fraction',ha='left',va='top')
+        plt.legend(fontsize='small',loc=4)
+
+    axes[0].set_ylim(1.e-3,1)
+    axes[0].plot(ts['tMyr'],ts['mass_whole'],color='k')
+    axes[1].set_ylim(1.e44,2.e48)
+    axes[1].plot(ts['tMyr'],ts['energy_whole'],color='k')
 
     return fig

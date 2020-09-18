@@ -9,6 +9,8 @@ from scipy.stats import poisson
 
 import logging
 
+__all__ = [ "TigressWindModel" ]
+
 class TigressWindModel(object):
     """TIGRESS Wind Launching Model class
 
@@ -27,8 +29,16 @@ class TigressWindModel(object):
     def __init__(self, z0='H', verbose=False):
         self.ncomp = 2 # fixed
         self.scaling_field = 'sfr' # fixed
-        self.z0 = z0
+        self.z0list=['H','2H','500','1000']
+        self._set_z0(z0)
         self._set_model_parameters(verbose=verbose)
+
+    def _set_z0(self,z0):
+        """Initialize z0"""
+        if z0 in self.z0list:
+            self.z0 = z0
+        else:
+            raise ValueError('z0 must be one of {}'.format(self.z0list))
 
     def _set_model_parameters(self, verbose=False):
         """Initialize PDF model parameters.
@@ -61,7 +71,7 @@ class TigressWindModel(object):
         self.params = dict(Esn=1.e51*au.erg, mstar=95.5*au.M_sun, vcool=200*au.km/au.s,
                            Mej=10.*au.M_sun, ZSN=0.2, ZISM0=0.02)
         self.params['vej'] = np.sqrt(2.0*self.params['Esn']/self.params['Mej']).to('km/s')
-        self.ref_params = dict(mref=self.params['mstar'],
+        self.ref_params = dict(Mref=self.params['mstar'],
             pref=self.params['Esn']/(2*self.params['vcool']),
             Eref=self.params['Esn'],
             Zref=self.params['Mej']*self.params['ZSN'])
@@ -105,9 +115,7 @@ class TigressWindModel(object):
         ----------
         z0 : ['H','2H','500','1000']
         """
-        if not z0 in {'H','2H','500','1000'}:
-            raise ValueError("z0 must be one of ['H', '2H', '500', '1000'], but z0={}".format(z0))
-        self.z0 = z0
+        self._set_z0(z0)
         self._set_parameters()
 
     def show_parameters(self):
@@ -126,10 +134,12 @@ class TigressWindModel(object):
     def set_axes(self,pdf=None,sfr=(-6,2,100),vout=(0,4,500),cs=(0,4,500),verbose=False):
         """Set axes (`vout`, `cs`, `sfr`) using `xarray` for convenient manipulations
 
-        If a simulated pdf is an input, model axes are set to be identical to those of the input pdf
-        otherwise, axes are set for a given (log min, log max, N bins)
+        If a simulated pdf is an input, model axes are set to be identical to
+        those of the input pdf otherwise, axes are set for a given (log min,
+        log max, N bins)
 
-        Key attributes, `u` = `logvout`, `w` = `logcs`, `logsfr`, `vBz`, and `Mach`, will be set
+        Key attributes, `u` = `logvout`, `w` = `logcs`, `logsfr`, `vBz`, and
+        `Mach`, will be set
 
         Parameters
         ----------
@@ -148,18 +158,26 @@ class TigressWindModel(object):
         if pdf is not None:
             if verbose:
                 print('Setting up from simulation PDF...')
-                x1,x2,dbin = pdf.logvout.min().data, pdf.logvout.max().data, pdf.attrs['dbin']
-                print('  logvout in ({:.1f},{:.1f}) with dlogvout = {:.2f}'.format(x1,x2,dbin))
-                x1,x2,dbin = pdf.logcs.min().data, pdf.logcs.max().data, pdf.attrs['dbin']
-                print('  logcs in ({:.1f},{:.1f}) with dlogcs = {:.2f}'.format(x1,x2,dbin))
-                print('  Sigma_SFR = {:.3g}, ZISM = {:.3g}'.format(pdf.attrs['sfr'],pdf.attrs['ZISM']))
-                for fl in ['massflux','momflux','energyflux','metalflux']:
-                    T1,T2=(1.1854266752455402,1.9121660193614398) # log value of 2.e4 and 5.5e5
+                attrs = pdf.attrs
+                u = pdf.logvout.data
+                x1,x2,dbin = u.min(), u.max(), attrs['dbin']
+                print('  u in ({:.1f},{:.1f}) with du = {:.2f}'.format(x1,x2,dbin))
+                w = pdf.logcs.data
+                x1,x2,dbin = w.min(), w.max(), attrs['dbin']
+                print('  w in ({:.1f},{:.1f}) with dw = {:.2f}'.format(x1,x2,dbin))
+                print('  Sigma_SFR = {:.3g},'.format(attrs['sfr']), end=' ')
+                print('ZISM = {:.3g}'.format(attrs['ZISM']))
+                for fl in ['Mpdf','ppdf','Epdf','Zpdf']:
+                    # log value of 2.e4 and 5.5e5
+                    T1,T2=(1.1854266752455402,1.9121660193614398)
                     c=pdf[fl].sel(logcs=slice(0,T1)).sum().data*dbin**2
                     i=pdf[fl].sel(logcs=slice(T1,T2)).sum().data*dbin**2
                     h=pdf[fl].sel(logcs=slice(T2,4)).sum().data*dbin**2
                     t=pdf[fl].sel().sum().data*dbin**2
-                    print('  {} cool={:.3f}, int={:.3f}, hot={:.3f}, total={:.3f}'.format(fl,c,i,h,t))
+                    msg = '  {:5s}:'.format(fl)
+                    for ph, fph in zip(['cool','int','hot','total'],[c,i,h,t]):
+                        msg += ' {}={:.3f}'.format(ph,fph)
+                    print(msg)
             self.logvout = pdf.logvout
             self.logcs = pdf.logcs
             self.dlogvout = pdf.attrs['dbin']
@@ -181,22 +199,23 @@ class TigressWindModel(object):
             else: # scalar
                 self.sfr=sfr
                 if sfr>0:
-                  self.logsfr=np.log10(sfr)
+                    self.logsfr=np.log10(sfr)
                 else:
-                  raise ValueError('sfr must be positive, but sfr={}'.format(sfr))
+                    raise ValueError('sfr must be positive, but sfr={}'.format(sfr))
                 if verbose: print('sfr={}'.format(sfr))
 
             for f in ranges:
                 if len(ranges[f]) != 3:
-                    raise ValueError('{} should either be an array/list/tuple of'.format(f)+
+                    raise ValueError('{} should either be array-like with '.format(f)+
                                      'three elements (log min, log max, N), '+
                                      'but len({})={}'.format(f,len(ranges[f])))
 
                 x1,x2,N = ranges[f]
                 if verbose: print('{}: min={}, max={}, N={}'.format(f,x1,x2,N))
-                x=np.linspace(x1,x2,N)
+                x = np.linspace(x1,x2,N)
+                x_da = xr.DataArray(x,coords=[x],dims=['log'+f])
                 setattr(self,'dlog'+f,x[1]-x[0])
-                setattr(self,'log'+f,getattr(xr.DataArray(x,coords=[x],dims=['log'+f]),'log'+f))
+                setattr(self,'log'+f,getattr(x_da,'log'+f))
                 setattr(self,f,10.**getattr(self,'log'+f))
 
         self.u = self.logvout
@@ -227,8 +246,8 @@ class TigressWindModel(object):
         return v0*x**0.23+3
 
     def _vB0(self,x):
-        """Scaling relation for the characteristic Bernoulli velocity (outgoing component)
-        of hot gas vs SFR surface density
+        """Scaling relation for the characteristic Bernoulli velocity (outgoing
+        component) of hot gas vs SFR surface density
 
         vBz = (vout^2+5*cs^2) with gamma = 5/3 is assumed
         This can be model specific (now it is fixed)
@@ -354,19 +373,19 @@ class TigressWindModel(object):
         .. math::
 
             Z(v_{\mathcal{B}, z}) \equiv \tilde{\zeta}(v_{\mathcal{B}, z})Z_{\rm ISM}
-            = \left(\frac{v_{\mathcal{B}, z}}{3.2\times10^3{\rm km/s}}\right)^1.7 (0.2 - Z_{\rm ISM})
-            + Z_{\rm ISM}
+            = \left(\frac{v_{\mathcal{B}, z}}{3.2\times10^3{\rm km/s}}\right)^1.7
+              (0.2 - Z_{\rm ISM}) + Z_{\rm ISM}
 
         Equation (XX) in the paper
         """
-        yZcool=1.0
-        expo=1.7
+        yZcool = 1.0
+        expo = 1.7
 
-        vmax=self.params['vej'].to('km/s').value
-        ZSN=self.params['ZSN']
-        Mej=self.params['Mej']
+        vmax = self.params['vej'].to('km/s').value
+        ZSN = self.params['ZSN']
+        Mej = self.params['Mej']
 
-        Zmodel=np.clip((vBz/vmax)**expo*(ZSN-ZISM)+ZISM*yZcool,None,ZSN)
+        Zmodel = np.clip((vBz/vmax)**expo*(ZSN-ZISM)+ZISM*yZcool,None,ZSN)
         return Zmodel
 
     def CoolMassFluxPDF(self,u,w,sfr=1.0,params=None):
@@ -394,13 +413,6 @@ class TigressWindModel(object):
         -----
         see :ref:`model`
         """
-
-        if type(u) != xr.DataArray:
-            logging.warning("type(u) = {} is not xarray.DataArray. Care needed for correct broadcasting.".format(type(u)))
-        if type(w) != xr.DataArray:
-            logging.warning("type(w) = {} is not xarray.DataArray. Care needed for correct broadcasting.".format(type(w)))
-        if (type(sfr) != xr.DataArray) and (type(sfr) == np.array):
-            logging.warning("type(sfr) = {} is not xarray.DataArray. Care needed for correct broadcasting.".format(type(sfr)))
 
         vout = 10.**u
         cs = 10.**w
@@ -502,7 +514,7 @@ class TigressWindModel(object):
         """
 
         if (not hasattr(self,'u')) or (not hasattr(self,'w')) or (not hasattr(self,'sfr')):
-            raise AttributeError
+            raise AttributeError("axes are not set. Call set_axes() first")
 
         if ZISM is None:
             ZISM = self.params['ZISM0']
@@ -530,7 +542,7 @@ class TigressWindModel(object):
         """
 
         if (not hasattr(self,'u')) or (not hasattr(self,'w')) or (not hasattr(self,'sfr')):
-            raise AttributeError
+            raise AttributeError("axes are not set. Call set_axes() first")
 
         # place holder for xarray dataset
         pdf_dset = xr.Dataset()
@@ -548,9 +560,12 @@ class TigressWindModel(object):
         mpdfc = self.CoolMassFluxPDF(self.u,self.w,sfr=self.sfr)
         mpdfh = self.HotMassFluxPDF(self.u,self.w,sfr=self.sfr)
         if verbose: # sanity check
-            print('Mass PDFs are integrated to:',end=' ')
-            print('cool={:.3g}'.format(mpdfc.sum(dim=['logcs','logvout']).min().data*dbinsq),end=' ')
-            print('hot={:.3g}'.format(mpdfh.sum(dim=['logcs','logvout']).min().data*dbinsq))
+            msg = 'Mass PDFs are integrated to:'
+            fcool = mpdfc.sum(dim=['logcs','logvout']).min().data*dbinsq
+            fhot = mpdfh.sum(dim=['logcs','logvout']).min().data*dbinsq
+            msg += ' cool={:.3g}'.format(fcool)
+            msg += ' hot={:.3g}'.format(fhot)
+            print(msg)
 
         # renormalization
         etac = self._etaM_cool(self.sfr)
@@ -575,7 +590,7 @@ class TigressWindModel(object):
         """
 
         if (not hasattr(self,'u')) or (not hasattr(self,'w')) or (not hasattr(self,'sfr')):
-            logging.error("axes are not set. Call set_axes() first")
+            raise AttributeError("axes are not set. Call set_axes() first")
 
         dbinsq = self.dlogcs*self.dlogvout
 
@@ -607,7 +622,7 @@ class TigressWindModel(object):
         """
 
         if (not hasattr(self,'u')) or (not hasattr(self,'w')) or (not hasattr(self,'sfr')):
-            logging.error("axes are not set. Call set_axes() first")
+            raise AttributeError("axes are not set. Call set_axes() first")
 
         dbinsq = self.dlogcs*self.dlogvout
 
@@ -647,7 +662,7 @@ class TigressWindModel(object):
         """
 
         if (not hasattr(self,'u')) or (not hasattr(self,'w')) or (not hasattr(self,'sfr')):
-            logging.error("axes are not set. Call set_axes() first")
+            raise AttributeError("axes are not set. Call set_axes() first")
 
         pdf_dset.attrs['ZISM']=ZISM
 

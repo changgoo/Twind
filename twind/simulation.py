@@ -10,10 +10,7 @@ from scipy.stats import poisson
 
 from .models import TigressWindModel
 
-__all__ = [ "TigressSimContainer", "TigressSimLoader"]
-
-modelnames = ['R2','R4','R8','R16','LGR2','LGR4','LGR8']
-z0list = ['H','2H','500','1000']
+__all__ = [ "TigressSimContainer", "TigressSimLoader" ]
 
 class TigressSimContainer(object):
     """Simulation PDF container for the TIGRESS simulation suite
@@ -23,6 +20,8 @@ class TigressSimContainer(object):
     Parameters
     ----------
     z0 : ['H','2H','500','1000']
+    modelnames : ['R2','R4','R8','R16','LGR2','LGR4','LGR8']
+        list of model names to load
 
     Examples
     --------
@@ -30,11 +29,8 @@ class TigressSimContainer(object):
     >>> sim = TigressSimContainer(z0='H')
 
     """
-    def __init__(self,z0='H'):
-        if z0 in z0list:
-            self.z0=z0
-        else:
-            raise ValueError('z0 must be one of {}'.format(z0list))
+    def __init__(self,z0='H',modelnames=['R2','R4','R8','R16','LGR2','LGR4','LGR8']):
+        self._set_z0(z0)
 
         sims=dict()
         for name in modelnames:
@@ -45,6 +41,14 @@ class TigressSimContainer(object):
             sims[name] = sim
 
         self.sims = sims
+
+    def _set_z0(self,z0):
+        """Initialize z0"""
+        if z0 in ['H','2H','500','1000']:
+            self.z0 = z0
+        else:
+            raise ValueError('z0 must be one of {}'.format(self.z0list))
+
 
 class TigressSimLoader(TigressWindModel):
     """Simulated PDF loader for the TIGRESS simulation suite
@@ -63,20 +67,21 @@ class TigressSimLoader(TigressWindModel):
     def __init__(self,name='R4',z0='H'):
         TigressWindModel.__init__(self, z0, False)
 
-        if name in modelnames:
-            self.name=name
-        else:
-            raise ValueError('name must be one of {}'.format(modelnames))
-        if z0 in z0list:
-            self.z0=z0
-        else:
-            raise ValueError('z0 must be one of {}'.format(z0list))
+        self.modelnames=['R2','R4','R8','R16','LGR2','LGR4','LGR8']
+        self._set_name(name)
 
-        self.pdffile='../data/pdfs/{}-{}.nc'.format(name,z0)
-        self.tsfile='../data/time_series/{}-{}.nc'.format(name,z0)
+        self.pdffile='data/pdfs/{}-{}.nc'.format(self.name,self.z0)
+        self.tsfile='data/time_series/{}-{}.nc'.format(self.name,self.z0)
+
+    def _set_name(self,name):
+        """Initialize name"""
+        if name in self.modelnames:
+            self.name = name
+        else:
+            raise ValueError('name must be one of {}'.format(self.modelnames))
 
     def load(self,download=False,time_series=False):
-        """Load simulation pdf
+        """Load simulation PDF
 
         Parameters
         ----------
@@ -115,7 +120,7 @@ class TigressSimLoader(TigressWindModel):
         for fl,loading in zip(['mass','mom','energy','metal'],
                 ['etaM','etap','etaE','etaZ']):
             conv_fact = attrs[fl+'flux_unit']/attrs['NxNyNt']/attrs['sfr']/attrs[fl+'_ref']
-            attrs[loading] = attrs[fl+'flux']*conf_fact
+            attrs[loading] = attrs[fl+'flux']*conv_fact
 
         # add metal related fields
         simpdf['Z'] = simpdf['Zpdf']/simpdf['Mpdf']*attrs['metalflux']/attrs['massflux']
@@ -166,15 +171,15 @@ class TigressSimLoader(TigressWindModel):
             raise ValueError("source = ['dataverse', 'tigressdata']")
 
 
-        if not os.path.isdir('../data/'):
-            print('creating folder ../data/')
-            os.mkdir('../data/')
-        if not os.path.isdir('../data/pdfs/'):
-            print('creating folder ../data/pdfs/')
-            os.mkdir('../data/pdfs/')
-        if not os.path.isdir('../data/time_series/') and time_series:
-            print('creating folder ../data/time_series/')
-            os.mkdir('../data/time_series/')
+        if not os.path.isdir('data/'):
+            print('creating folder data/')
+            os.mkdir('data/')
+        if not os.path.isdir('data/pdfs/'):
+            print('creating folder data/pdfs/')
+            os.mkdir('data/pdfs/')
+        if not os.path.isdir('data/time_series/') and time_series:
+            print('creating folder data/time_series/')
+            os.mkdir('data/time_series/')
 
         #if exists(url):
         try:
@@ -218,7 +223,7 @@ class TigressSimLoader(TigressWindModel):
         # Eq. XX and Eq. XX for b
         flratio = (attrs['massflux']/attrs['energyflux'])
         energy_bias = self._energy_bias(pdf['vBz'])
-        pdf['Epdf_r'] = pdf['Mpdf']*0.5*pdf['vBz']**2*flraio/energy_bias
+        pdf['Epdf_r'] = pdf['Mpdf']*0.5*pdf['vBz']**2*flratio/energy_bias
 
         # Eq. XX and Eq. XX for tildeZ
         flratio = (attrs['massflux']/attrs['metalflux'])

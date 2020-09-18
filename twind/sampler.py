@@ -143,7 +143,7 @@ class TigressWindSampler(TigressWindModel):
             mass, momemtum, energy, metal loading factors for hot gas
         """
         snr=sfr/self.params['mstar'].to('Msun').value
-        mr=snr*self.ref_params['mref'].to('Msun').value
+        mr=snr*self.ref_params['Mref'].to('Msun').value
         pr=snr*self.ref_params['pref'].to('Msun*km/s').value
         er=snr*self.ref_params['Eref'].to('erg').value
         Zr=snr*self.ref_params['Zref'].to('Msun').value
@@ -177,7 +177,7 @@ class TigressWindSampler(TigressWindModel):
         area : float
             area in kpc^2
         dt : float, array_like
-            time interval over which particle is sampled
+            time interval in yr over which particle is sampled
 
         Returns
         -------
@@ -194,7 +194,9 @@ class TigressWindSampler(TigressWindModel):
 
         # Step 1: obatin the mass of the wind in each gas phase
         mcool_out = self._etaM_cool(sfr)*mstar_
+        mcool_out[mstar_ == 0] = 0.
         mhot_out = self._etaM_hot(sfr)*mstar_
+        mhot_out[mstar_ == 0] = 0.
 
         # Step 2: draw an integer random variate for number of particles
         # expected number of particles

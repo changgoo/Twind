@@ -3,3 +3,5 @@ xarray>=0.15
 matplotlib>=3.0
 scipy>=1.4
 astropy
+seaborn>=0.10
+cmasher>=1.4
