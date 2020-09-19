@@ -61,6 +61,20 @@ A more complete example is available in the :ref:`loading_sfr` tutorial.
    tutorials/sampling
 
 .. toctree::
+   :maxdepth: 1
+   :caption: TIGRESS Simulation Suite
+
+   tutorials/model_table
+   tutorials/simulation_pdfs
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Examples
+
+   tutorials/paper_figures
+
+
+.. toctree::
     :maxdepth: 4
     :caption: API Reference
 
