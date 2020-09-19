@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath('..'))
 try:
     __version__ = get_distribution("twind").version
 except DistributionNotFound:
-    __version__ = "unknown version"
+    __version__ = "latest"
 
 # Convert the tutorials
 for fn in glob.glob("_static/notebooks/*.ipynb"):
@@ -20,7 +20,7 @@ for fn in glob.glob("_static/notebooks/*.ipynb"):
     outfn = os.path.join("tutorials", name + ".rst")
     print("Building {0}...".format(name))
     subprocess.check_call(
-        "jupyter nbconvert --template tutorials/tutorial_rst --to rst "
+        "jupyter nbconvert --template tutorials/tutorial_rst.tpl --to rst "
         + fn
         + " --output-dir tutorials",
         shell=True,
