@@ -11,9 +11,10 @@ Quickstart
 Step 1: initialize Twind class
 ------------------------------
 
-We are initilizing ``Twind`` class with default parameters set to match
-the TIGRESS simulation suite results at :math:`|z|=H`. Possible options
-are ``z0=['H', '2H', '500', '1000']``.
+We are initilizing the :class:`.TigressWindModel` class with default
+parameters set to match the TIGRESS simulation suite results at
+:math:`|z|=H` (see :ref:`simulation_pdfs`). Possible options are
+``z0=['H', '2H', '500', '1000']``.
 
 .. code:: python
 
@@ -52,7 +53,7 @@ are ``z0=['H', '2H', '500', '1000']``.
         ZISM0 = 0.02
         vej = 3171.4804794827423 km / s
     ref_params
-        mref = 95.5 solMass
+        Mref = 95.5 solMass
         pref = 2.5e+48 erg s / km
         Eref = 1e+51 erg
         Zref = 2.0 solMass
@@ -105,10 +106,10 @@ We use `xarray <http://xarray.pydata.org/en/stable/>`__ extensibly for
 easier manipulation with broadcasting, indexing, slicing, and
 interpolation.
 
-``set_axes()`` function accept either the simulated PDF (in the form of
-``xarray.Dataset``) or list of ranges (in log) and number of bins for
-``vout`` and ``cs`` axes (``sfr`` can either be a scalar or an array).
-Default is
+The :meth:`.TigressWindModel.set_axes` method accept either the
+simulated PDF (in the form of ``xarray.Dataset``) or list of ranges (in
+log) and number of bins for ``vout`` and ``cs`` axes (``sfr`` can either
+be a scalar or an array). Default is
 
 -  ``vout`` = (0,4,500)
 -  ``cs`` = (0,4,500)
@@ -162,10 +163,11 @@ We make sure that ``vBz`` and ``Mach`` are 2D while ``u=logvout`` and
 Step 3: build mass loading PDFs
 -------------------------------
 
-We have a function ``build_Mpdf`` that automatically build model PDFs
-for mass loading factor and return a ``xarray.Dataset``. Note that if
-the range of ``(u,w)`` is not large enough, the mass PDF may not
-integrate to 1 (use ``verbose=True`` to check this).
+We have a method :meth:`.TigressWindModel.build_Mpdf` that
+automatically builds model PDFs for mass loading factor and return a
+``xarray.Dataset``. Note that if the range of ``(u,w)`` is not large
+enough, the mass PDF may not integrate to 1 (use ``verbose=True`` to
+check this).
 
 Depending on the choice of the ``sfr`` axis, the resulting PDF can
 either be 2D or 3D. The returned ``Dataset`` have variables for PDFs
@@ -198,7 +200,7 @@ scalar, these are also scalars.
 
 .. parsed-literal::
 
-    <xarray.plot.facetgrid.FacetGrid at 0x7fc518825390>
+    <xarray.plot.facetgrid.FacetGrid at 0x7f88b069a400>
 
 
 
@@ -209,13 +211,13 @@ scalar, these are also scalars.
 Step 4: build all PDFs
 ----------------------
 
-We have a function ``build_model`` that automatically build model PDFs
-for mass, momentum, energy, and metal loading factors and return a
-``xarray.Dataset`` containing all. The last three PDFs are reconstructed
-from the mass PDF as outlined in `Kim et al. (2020b) <link>`__. By
-default, they are renormalized to ensure the integration over the entire
-``(u,w)`` gives 1. Note that the metal PDF is not normalized for the
-input ``ZISM`` but for ``ZISM0``.
+We have a method :meth:`.TigressWindModel.build_model` that
+automatically builds model PDFs for mass, momentum, energy, and metal
+loading factors and return a ``xarray.Dataset`` containing all. The last
+three PDFs are reconstructed from the mass PDF as outlined in `Kim et
+al. (2020b) <link>`__. By default, they are renormalized to ensure the
+integration over the entire ``(u,w)`` gives 1. Note that the metal PDF
+is not normalized for the input ``ZISM`` but for ``ZISM0``.
 
 Again, depending on the choice of the ``sfr`` axis, the resulting PDFs
 can either be 2D or 3D. The returned ``Dataset`` have variables for PDFs
@@ -282,7 +284,7 @@ Finally, 2D PDFs for mass, momentum, energy, and metal loadings at
 
 .. parsed-literal::
 
-    <xarray.plot.facetgrid.FacetGrid at 0x7fc538ac0a20>
+    <xarray.plot.facetgrid.FacetGrid at 0x7f8870725898>
 
 
 

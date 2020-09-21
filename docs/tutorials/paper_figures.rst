@@ -9,7 +9,7 @@ Figures in Paper II
 ===================
 
 This tutorial shows how ``Twind`` package can be used to produce figures
-in Paper II. See the source code
+in `Paper II <_link>`__. See the source code
 `twind/plotter.py <https://github.com/changgoo/Twind/tree/master/twind/plotter.py>`__
 to know what is happening under the scean.
 
@@ -121,7 +121,7 @@ joint PDFs in logarithmic color scale
 model (contour). The remaining four panels are histograms showing
 projections onto (from left to right) **outflow velocity**
 :math:`v_{\rm out}`, **sound speed** :math:`c_s`, **Bernoulli velocity**
-:math:`v_{B,z}`, **and Mach number :math:`\mathcal{M}`** axes. Model
+:math:`v_{B,z}`, **and Mach number** :math:`\mathcal{M}` axes. Model
 PDFs are separated into cool (blue) and hot (orange) components. The sum
 of the two (yellow) matches simulated PDFs (black lines) well
 (especially for dominating components).

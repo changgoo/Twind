@@ -8,9 +8,9 @@
 Particle Sampling
 =================
 
-``TigressWindSampler`` class is a child of ``TigressWindModel`` class.
-For sampling, it won’t build pdf models, but use the scaling relations
-and parameters of the model.
+The :class:`.TigressWindSampler` class is a child class of the
+:class:`.TigressWindModel` class. For sampling, it won’t build pdf
+models, but use the scaling relations and parameters of the model.
 
 .. code:: python
 
@@ -132,10 +132,10 @@ values of outflow rates using the scaling relations of outflow loading
 factors (of each outflow phase) presented in `Kim et
 al. (2020a) <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/abstract>`__.
 
-``sampler.get_refs`` method returns four lists containing time series of
-reference outflow rates and loading factors for total, cool, and hot
-outflows. Each list contains ``mass``, ``momemtum``, ``energy``, and
-``metal`` in order.
+The :meth:`.TigressWindSampler.get_refs` method returns four lists
+containing time series of reference outflow rates and loading factors
+for total, cool, and hot outflows. Each list contains ``mass``,
+``momemtum``, ``energy``, and ``metal`` in order.
 
 .. code:: python
 
@@ -156,11 +156,17 @@ outflows. Each list contains ``mass``, ``momemtum``, ``energy``, and
 
 
 For the area of 1 kpc\ :math:`^2` and time interval 1 Myr considered
-here, we expect the mean mass and energy in outflow are 1.8e4 Msun and
-1.e51 erg, respectively. The mass ratio between cool and hot outflows is
-about 50, therefore, for fair sampling, we might need
+here, we expect the mean mass and energy in outflow are
+:math:`2.7\times10^4 M_\odot` and :math:`2.2\times10^{51}` erg,
+respectively. The mass ratio between cool and hot outflows is about 50,
+therefore, for a fair sampling, we might need
 :math:`m^{\rm cool}/m^{\rm hot}\sim50` with
 :math:`m^{\rm cool}<10^4 M_\odot`.
+
+Frist, as a well sampled example, we use
+
+-  :math:`m^{\rm cool} = 10^3 M_\odot`
+-  :math:`m^{\rm hot} = 10^1 M_\odot`
 
 .. code:: python
 
@@ -179,16 +185,14 @@ about 50, therefore, for fair sampling, we might need
                 plt.yscale('log')
     
         axes[0].set_title(r'$m^{{\rm cool}} = 10^{}, m^{{\rm hot}} = 10^{}$'.format(int(np.log10(mc)),int(np.log10(mh))))
-        axes[0].set_ylabel('Mass')
-        axes[1].set_ylabel('Momentum')
-        axes[2].set_ylabel('Energy')
-        axes[3].set_ylabel('Metal Mass')
+        axes[0].set_ylabel(r'Mass $[M_\odot/{\rm yr}]$')
+        axes[1].set_ylabel(r'Momentum $[(M_\odot {\rm km/s})/{\rm yr}]$')
+        axes[2].set_ylabel(r'Energy $[{\rm erg/yr}]$')
+        axes[3].set_ylabel(r'Metal Mass $[M_\odot/{\rm yr}]$')
         return fig
 
-Frist, as a well sampled example, we use
-
--  :math:`m^{\rm cool} = 10^3 M_\odot`
--  :math:`m^{\rm hot} = 10^1 M_\odot`
+Here, a utility function :func:`.to_time_series` is used to convert
+particle data into time series of rates.
 
 .. code:: python
 
@@ -196,7 +200,7 @@ Frist, as a well sampled example, we use
 
 
 
-.. image:: sampling_files/sampling_23_0.png
+.. image:: sampling_files/sampling_24_0.png
 
 
 The second example is for well sampled cool phase but poorly sampled hot
@@ -211,5 +215,5 @@ phase.
 
 
 
-.. image:: sampling_files/sampling_25_0.png
+.. image:: sampling_files/sampling_26_0.png
 

@@ -8,11 +8,11 @@
 Simulation PDFs
 ===============
 
-We made time averaged joint PDFs from all 7 models (see
-:ref:`model_table`) at all 4 heights available. This tutorial
-demonstrates how to download, read-in, and handle simulation PDFs using
-``TigressSimLoader`` class. More comphrensive examples can be found at
-:ref:`paper_figures`.
+The time averaged joint PDFs from the TIGRESS simulations suites for all
+7 models (see :ref:`model_table`) at all 4 heights are available. This
+tutorial demonstrates how to download, read, and handle simulation PDFs
+using :class:`.TigressSimLoader` class. More comphrensive examples can
+be found at :ref:`paper_figures`.
 
 .. code:: python
 
@@ -24,12 +24,14 @@ demonstrates how to download, read-in, and handle simulation PDFs using
     sim = twind.TigressSimLoader('R4','H')
     sim.load(download=True)
 
+Since :class:`.TigressSimLoader` is a child class of
+:class:`.TigressWindModel`, this itself can be used to build model
+PDFs. If the simulation pdf is passed in
+:meth:`.TigressWindModel.set_axes` method, it will make axes identical
+to the simulation PDF.
+
 .. code:: python
 
-    # since TigressSimLoader is a child class of TigressWindModel, 
-    # this itself can be used to build model PDFs
-    # if the simulation pdf is passed in set_axes() method, 
-    # it will make axes identical to the simulation PDF
     sim.set_axes(pdf=sim.simpdf,verbose=True)
     modelpdf=sim.build_model()
 
@@ -68,11 +70,11 @@ demonstrates how to download, read-in, and handle simulation PDFs using
 
 
 
-.. image:: simulation_pdfs_files/simulation_pdfs_7_1.png
+.. image:: simulation_pdfs_files/simulation_pdfs_8_1.png
 
 
 
-.. image:: simulation_pdfs_files/simulation_pdfs_7_2.png
+.. image:: simulation_pdfs_files/simulation_pdfs_8_2.png
 
 
 Looking for more comprehensive comparisons? Check :ref:`paper_figures`

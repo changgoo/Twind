@@ -18,7 +18,7 @@ using table files made available at
 Mainly, the results are phase separated (three large bins in temperature
 or :math:`c_s`) but outflow velocity integrated (:math:`v_{\rm out}>0`).
 
-You can download
+You can download the original
 `notebook <changgoo/tigress-wind-figureset/blob/master/tables/Example_scripts.ipynb>`__
 to reproduce tables and figures in `Paper
 I <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/abstract>`__.
@@ -312,4 +312,3 @@ Table 4: Velocities and Metals
 
 *mean and error are determined from bootstrap resampling with a sample
 size of 10 for time series over* :math:`0.5<t/t_{\rm orb}<1.5`
-

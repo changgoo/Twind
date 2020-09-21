@@ -195,4 +195,3 @@ Let’s assume a particular form of the escape velocity:
 
 Obviously, the result (red) falls between ``vBzcut0=30`` (blue) and
 ``vBzcut0=300`` (green) cases.
-
