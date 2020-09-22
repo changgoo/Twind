@@ -38,8 +38,6 @@ Add path to the source directory using ``sys.path``; e.g.,
 Package managers
 ----------------
 
-**(Not packaged yet)**
-
 The recommended way to install the stable version of **Twind** is using
 `pip <http://www.pip-installer.org/>`_
 

@@ -1,4 +1,4 @@
-from matplotlib.colors import ListedColormap
+from matplotlib.colors import ListedColormap,LogNorm
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -146,7 +146,7 @@ def show2d(pdf,xlabel=True,ylabel=True,label=None,vBM=[False,False],**kwargs):
     """
     dbin = np.diff(pdf.logvout)[0]
     extent=[pdf.logvout.min(),pdf.logvout.max()+dbin,pdf.logcs.min(),pdf.logcs.max()+dbin]
-    im=plt.imshow(np.log10(pdf),vmin=pdfmin,vmax=pdfmax,
+    im=plt.imshow(np.log10(pdf),vmin=pdfmin,vmax=pdfmax,origin='lower',
                   extent=extent,cmap=pdf_cmap,**kwargs)
     ax=plt.gca()
     ax.set_aspect('equal')
