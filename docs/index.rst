@@ -3,7 +3,7 @@ Twind
 
 **Twind** is a Python prototype of `TIGRESS Multiphase Wind Launching
 Model <https://github.com/changgoo/twind>`_. The model is built on `the TIGRESS
-simulation suite <https://arxiv.org/abs/2006.16315>`_ developed as part
+simulation suite <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/>`_ developed as part
 of `the SMAUG
 project <https://www.simonsfoundation.org/flatiron/center-for-computational-astrophysics/galaxy-formation/smaug2/papersplash1/>`_.
 
@@ -86,9 +86,9 @@ License & Attribution
 
 If you make use of **Twind** in your work, please cite our papers:
 
--   ``Kim et al. 2020a, ApJ in press, XXX, XX`` `First results from SMAUG: Characterization of
+-   ``Kim et al. 2020a, ApJ, 900, 61`` `First results from SMAUG: Characterization of
     Multiphase Galactic Outflows from a Suite of Local Star-Forming Galactic Disk
     Simulations` [`arXiv <https://arxiv.org/abs/1202.3665>`_,
-    `ADS <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K>`_,
-    `BibTeX <https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/exportcitation>`_]
--   ``Kim et al. 2020b, ApJL submitted, XXX, XX`` `TIGRESS Multiphase Wind Launching Model` [links].
+    `ADS <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/abstract>`_,
+    `BibTeX <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/exportcitation>`_]
+-   ``Kim et al. 2020b, ApJL submitted`` `TIGRESS Multiphase Wind Launching Model` [links].
