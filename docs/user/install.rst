@@ -7,7 +7,8 @@ Since **Twind** is a pure Python module, it should be pretty easy to install.
 In addition to widely used packages like `scipy <https://www.scipy.org>`_, `numpy <https://numpy.org/>`_,
 `matplotlib <https://matplotlib.org>`_,
 you'll need `xarray <http://xarray.pydata.org/en/stable/>`_
-and `astropy <https://www.astropy.org>`_. Also, :ref:`paper-figures` needs
+and `astropy <https://www.astropy.org>`_. To reproduce :ref:`paper_figures`,
+you would need
 `seaborn <https://seaborn.pydata.org>`_,
 `CMasher <https://cmasher.readthedocs.io>`_, and
 `cmocean <https://matplotlib.org/cmocean/>`_.

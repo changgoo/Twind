@@ -700,7 +700,7 @@ class TigressWindModel(object):
 # hard coded fitting results from Kim et al. 2020
 # https://ui.adsabs.harvard.edu/abs/2020arXiv200616315K/abstract
 # linear fits to log Sigma_SFR,40 and log eta_q
-# intercepts:
+# intercept:
 #   column -- (cool, intermediate, hot, whole) phases
 #   row -- eta_M, eta_p, eta_E, eta_Z
 fit_alpha = {'H':[-0.0671392 , -1.21580154, -0.85672715,  0.0131208 ,
@@ -720,7 +720,7 @@ fit_alpha = {'H':[-0.0671392 , -1.21580154, -0.85672715,  0.0131208 ,
                      -2.52731165, -2.88037334, -1.3744673 , -1.33644891,
                      -0.47739876, -1.26198951, -0.79526589, -0.30588739]}
 
-# clopes:
+# slope:
 #   column -- (cool, intermediate, hot, whole) phases
 #   row -- eta_M, eta_p, eta_E, eta_Z
 fit_beta = {'H':[-0.44065478, -0.22666131, -0.06933898, -0.41838774,

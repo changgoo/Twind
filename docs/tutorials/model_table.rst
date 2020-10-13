@@ -19,7 +19,7 @@ Mainly, the results are phase separated (three large bins in temperature
 or :math:`c_s`) but outflow velocity integrated (:math:`v_{\rm out}>0`).
 
 You can download the original
-`notebook <changgoo/tigress-wind-figureset/blob/master/tables/Example_scripts.ipynb>`__
+`notebook <https://github.com/changgoo/tigress-wind-figureset/blob/paper1/tables/Example_scripts.ipynb>`__
 to reproduce tables and figures in `Paper
 I <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/abstract>`__.
 
