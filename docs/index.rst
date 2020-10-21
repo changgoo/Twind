@@ -1,7 +1,8 @@
 Twind
 =====
 
-**Twind** is a Python prototype of `TIGRESS Multiphase Galactic Wind Launching Model  <https://github.com/changgoo/twind>`_. The model is built on `the TIGRESS
+**Twind** is a Python prototype of
+`TIGRESS Multiphase Galactic Wind Launching Model <https://github.com/changgoo/twind>`_. The model is built on `the TIGRESS
 simulation suite <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/>`_
 developed as part of `the SMAUG
 project <https://www.simonsfoundation.org/flatiron/center-for-computational-astrophysics/galaxy-formation/smaug2/papersplash1/>`_.
@@ -87,10 +88,10 @@ If you make use of **Twind** in your work, please cite our papers:
 
 -   ``Kim et al. 2020a, ApJ, 900, 61`` `First results from SMAUG: Characterization of
     Multiphase Galactic Outflows from a Suite of Local Star-Forming Galactic Disk
-    Simulations` [`arXiv <https://arxiv.org/abs/1202.3665>`_,
-    `ADS <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/abstract>`_,
-    `BibTeX <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/exportcitation>`_]
+    Simulations` [`arXiv <https://arxiv.org/abs/1202.3665>`__,
+    `ADS <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/abstract>`__,
+    `BibTeX <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/exportcitation>`__]
 -   ``Kim et al. 2020b, ApJL accepted`` `A Framework for Multiphase Galactic Wind
-    Launching using TIGRESS` [`arXiv <https://arxiv.org/abs/2010.09090>`_,
-    `ADS <https://ui.adsabs.harvard.edu/abs/2020arXiv201009090K/abstract>`_,
-    `BibTex <https://ui.adsabs.harvard.edu/abs/2020arXiv201009090K/exportcitation>`_].
+    Launching using TIGRESS` [`arXiv <https://arxiv.org/abs/2010.09090>`__,
+    `ADS <https://ui.adsabs.harvard.edu/abs/2020arXiv201009090K/abstract>`__,
+    `BibTex <https://ui.adsabs.harvard.edu/abs/2020arXiv201009090K/exportcitation>`__]
