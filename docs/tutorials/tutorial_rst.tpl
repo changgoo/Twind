@@ -1,4 +1,4 @@
-{%- extends 'display_priority.tpl' -%}
+{%- extends 'base/display_priority.j2' -%}
 
 {% block header %}
 **Note:** This tutorial was generated from an IPython notebook that can be downloaded
