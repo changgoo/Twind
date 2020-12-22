@@ -66,6 +66,8 @@ instance/
 docs/_build/
 docs/build/
 docs/tutorials/*_files
+docs/_static/notebooks/data
+docs/_static/notebooks/tables
 
 # PyBuilder
 target/
@@ -106,3 +108,6 @@ ENV/
 
 # CMasher custom
 PROJECTS/
+
+# pypi
+.pypirc

@@ -93,5 +93,5 @@ If you make use of **Twind** in your work, please cite our papers:
     `BibTeX <https://ui.adsabs.harvard.edu/abs/2020ApJ...900...61K/exportcitation>`__]
 -   ``Kim et al. 2020b, ApJL accepted`` `A Framework for Multiphase Galactic Wind
     Launching using TIGRESS` [`arXiv <https://arxiv.org/abs/2010.09090>`__,
-    `ADS <https://ui.adsabs.harvard.edu/abs/2020arXiv201009090K/abstract>`__,
-    `BibTex <https://ui.adsabs.harvard.edu/abs/2020arXiv201009090K/exportcitation>`__]
+    `ADS <https://ui.adsabs.harvard.edu/abs/2020ApJ...903L..34K/abstract>`__,
+    `BibTex <https://ui.adsabs.harvard.edu/abs/2020ApJ...903L..34K/exportcitation>`__]
