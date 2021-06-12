@@ -29,12 +29,13 @@ class TigressSimContainer(object):
     >>> sim = TigressSimContainer(z0='H')
 
     """
-    def __init__(self,z0='H',modelnames=['R2','R4','R8','R16','LGR2','LGR4','LGR8']):
+    def __init__(self,z0='H',modelnames=['R2','R4','R8','R16','LGR2','LGR4','LGR8'],
+                 basedir='./'):
         self._set_z0(z0)
 
         sims=dict()
         for name in modelnames:
-            sim = TigressSimLoader(name,z0)
+            sim = TigressSimLoader(name,z0,basedir=basedir)
             sim.load(download=True)
             sim.set_axes(sim.simpdf)
             sim.pdf_reconstruction()
@@ -64,14 +65,16 @@ class TigressSimLoader(TigressWindModel):
     >>> sim = TigressSimContainer(model='R4',z0='H')
 
     """
-    def __init__(self,name='R4',z0='H'):
+    def __init__(self,name='R4',z0='H',basedir='./'):
         TigressWindModel.__init__(self, z0, False)
 
         self.modelnames=['R2','R4','R8','R16','LGR2','LGR4','LGR8']
         self._set_name(name)
+        self.basedir=os.path.join(basedir,'data')
 
-        self.pdffile='data/pdfs/{}-{}.nc'.format(self.name,self.z0)
-        self.tsfile='data/time_series/{}-{}.nc'.format(self.name,self.z0)
+        fname = '{}-{}.nc'.format(self.name,self.z0)
+        self.pdffile=os.path.join([self.basedir,'pdfs',fname])
+        self.tsfile=os.path.join([self.basedir,'time_series',fname])
 
     def _set_name(self,name):
         """Initialize name"""
@@ -170,16 +173,13 @@ class TigressSimLoader(TigressWindModel):
         else:
             raise ValueError("source = ['dataverse', 'tigressdata']")
 
-
-        if not os.path.isdir('data/'):
-            print('creating folder data/')
-            os.mkdir('data/')
-        if not os.path.isdir('data/pdfs/'):
-            print('creating folder data/pdfs/')
-            os.mkdir('data/pdfs/')
-        if not os.path.isdir('data/time_series/') and time_series:
-            print('creating folder data/time_series/')
-            os.mkdir('data/time_series/')
+        directories = [self.basedir,
+                       os.path.join(self.basedir,'pdfs'),
+                       os.path.join(self.basedir,'time_series')]
+        for d in directories:
+            if not os.path.isdir(d):
+                print('creating folder {}'.format(d))
+                os.mkdir(d)
 
         #if exists(url):
         try:
