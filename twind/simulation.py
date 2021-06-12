@@ -73,8 +73,8 @@ class TigressSimLoader(TigressWindModel):
         self.basedir=os.path.join(basedir,'data')
 
         fname = '{}-{}.nc'.format(self.name,self.z0)
-        self.pdffile=os.path.join([self.basedir,'pdfs',fname])
-        self.tsfile=os.path.join([self.basedir,'time_series',fname])
+        self.pdffile=os.path.join(self.basedir,'pdfs',fname)
+        self.tsfile=os.path.join(self.basedir,'time_series',fname)
 
     def _set_name(self,name):
         """Initialize name"""
