@@ -686,10 +686,10 @@ class TigressWindModel(object):
             pdf_dset['Z_renorm'] = renorm
 
         if ZISM != self.params['ZISM0']:
-            Z = self._Zmodel(self.vBz,self.sfr,ZISM)
+            Z = self._Zmodel(self.vBz,self.sfr,ZISM)/self.Ze
             Zplist = [Zpdfc, Zpdfh, Zpdf]
             for Zp in Zplist:
-                Zp *= Z*self.Ze/Zfact
+                Zp *= Z/Zfact
 
         pdf_dset['Zpdf-cool'] = Zpdfc
         pdf_dset['Zpdf-hot'] = Zpdfh
